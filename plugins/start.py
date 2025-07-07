@@ -8,6 +8,7 @@ from config import API_ID, API_HASH, ERROR_MESSAGE
 from database.database import db
 from plugins.strings import HELP_TXT
 from config import IS_FSUB
+from plugins.fsub import get_fsub
 
 
 class batch_temp(object):
