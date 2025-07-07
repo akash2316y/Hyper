@@ -100,7 +100,6 @@ def get_start_buttons():
 
 @Client.on_message(filters.command(["start"]) & filters.private)
 async def send_start(client: Client, message: Message):
-    print("✅ Start command triggered")
     if IS_FSUB:
         if not await get_fsub(client, message):
             return
