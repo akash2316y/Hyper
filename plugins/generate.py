@@ -1,7 +1,3 @@
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
 import traceback
 from pyrogram.types import Message
 from pyrogram import Client, filters
@@ -16,7 +12,7 @@ from pyrogram.errors import (
     PasswordHashInvalid
 )
 from config import API_ID, API_HASH
-from database.db import db
+from database.database import db
 
 SESSION_STRING_SIZE = 351
 
