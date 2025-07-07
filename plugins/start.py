@@ -247,28 +247,6 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
     await smsg.edit_text('**📤 Uploading...**')
     asyncio.create_task(upstatus(client, f'{message.id}upstatus.txt', smsg, chat))
 
-    # Get Caption and File Name
-    caption_user = msg.caption or msg.text or ""
-    file_name = None
-
-    if hasattr(msg, "document") and msg.document:
-        file_name = msg.document.file_name
-    elif hasattr(msg, "video") and msg.video:
-        file_name = msg.video.file_name
-    elif hasattr(msg, "audio") and msg.audio:
-        file_name = msg.audio.file_name
-    elif hasattr(msg, "animation") and msg.animation:
-        file_name = msg.animation.file_name
-    elif hasattr(msg, "sticker") and msg.sticker:
-        file_name = "Sticker.webp"
-    elif hasattr(msg, "photo") and msg.photo:
-        file_name = "Image.jpg"
-    elif hasattr(msg, "voice") and msg.voice:
-        file_name = "Voice.ogg"
-
-    display_file_name = f"**📄 {file_name}**\n\n" if file_name else ""
-    caption_display = display_file_name + caption_user
-    caption_db = display_file_name + caption_user + f"\n\n{user_tag}"
 
     buttons = []
     if msg.reply_markup and msg.reply_markup.inline_keyboard:
