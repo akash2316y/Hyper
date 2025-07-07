@@ -247,7 +247,6 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
     await smsg.edit_text('**📤 Uploading...**')
     asyncio.create_task(upstatus(client, f'{message.id}upstatus.txt', smsg, chat))
 
-
     buttons = []
     if msg.reply_markup and msg.reply_markup.inline_keyboard:
         for row in msg.reply_markup.inline_keyboard:
@@ -255,25 +254,23 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
                 if button.url:
                     buttons.append([InlineKeyboardButton(button.text, url=button.url)])
 
-
-
     try:
-    send_func = getattr(client, f"send_{msg_type}", None)
-    if send_func:
-        try:
-            await send_func(
-                DB_CHANNEL,
-                file,
-                caption=caption_db,
-                parse_mode=enums.ParseMode.MARKDOWN,
-                reply_markup=InlineKeyboardMarkup(buttons) if buttons else None
-            )
-        except Exception as db_err:
-            print(f"Error sending to DB_CHANNEL: {db_err}")
+        send_func = getattr(client, f"send_{msg_type}", None)   # 👉 Properly indented
+        if send_func:
+            try:
+                await send_func(
+                    DB_CHANNEL,
+                    file,
+                    caption=caption_db,
+                    parse_mode=enums.ParseMode.MARKDOWN,
+                    reply_markup=InlineKeyboardMarkup(buttons) if buttons else None
+                )
+            except Exception as db_err:
+                print(f"Error sending to DB_CHANNEL: {db_err}")
 
-    await smsg.delete()
+        await smsg.delete()
 
-except Exception as e:
-    if ERROR_MESSAGE:
-        await client.send_message(chat, f"❌ Error: {e}", reply_to_message_id=message.id)
-    await smsg.delete()
+    except Exception as e:
+        if ERROR_MESSAGE:
+            await client.send_message(chat, f"❌ Error: {e}", reply_to_message_id=message.id)
+        await smsg.delete()
