@@ -1,161 +1,93 @@
-import os, time
-import asyncio
+import os
+import asyncio 
+import pyrogram
 from pyrogram import Client, filters, enums
-from pyrogram.errors import (
-    FloodWait,
-    UserIsBlocked,
-    InputUserDeactivated,
-    UserAlreadyParticipant,
-    InviteHashExpired,
-    UsernameNotOccupied
-)
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from config import API_ID, API_HASH, ERROR_MESSAGE, IS_FSUB, DB_CHANNEL
+from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated, UserAlreadyParticipant, InviteHashExpired, UsernameNotOccupied
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message 
+from config import API_ID, API_HASH, ERROR_MESSAGE
 from database.database import db
 from plugins.strings import HELP_TXT
-from plugins.fsub import get_fsub
 
 class batch_temp(object):
     IS_BATCH = {}
 
-
 async def downstatus(client, statusfile, message, chat):
-    while not os.path.exists(statusfile):
-        await asyncio.sleep(1)
+    while True:
+        if os.path.exists(statusfile):
+            break
+
+        await asyncio.sleep(3)
+      
     while os.path.exists(statusfile):
         with open(statusfile, "r") as downread:
             txt = downread.read()
         try:
-            await client.edit_message_text(chat, message.id, txt)
-            await asyncio.sleep(1)
+            await client.edit_message_text(chat, message.id, f"**Downloaded:** **{txt}**")
+            await asyncio.sleep(10)
         except:
-            await asyncio.sleep(1)
+            await asyncio.sleep(5)
 
 
+# upload status
 async def upstatus(client, statusfile, message, chat):
-    while not os.path.exists(statusfile):
-        await asyncio.sleep(1)
+    while True:
+        if os.path.exists(statusfile):
+            break
+
+        await asyncio.sleep(3)      
     while os.path.exists(statusfile):
         with open(statusfile, "r") as upread:
             txt = upread.read()
         try:
-            await client.edit_message_text(chat, message.id, txt)
-            await asyncio.sleep(1)
+            await client.edit_message_text(chat, message.id, f"**Uploaded:** **{txt}**")
+            await asyncio.sleep(10)
         except:
-            await asyncio.sleep(1)
+            await asyncio.sleep(5)
 
 
-def human_readable_size(size):
-    for unit in ['B', 'KiB', 'MiB', 'GiB', 'TiB']:
-        if size < 1024:
-            return f"{size:.2f} {unit}"
-        size /= 1024
-    return f"{size:.2f} PiB"
-
-#-------------------------x---------------------x-------------
-
+# progress writer
 def progress(current, total, message, type):
-    now = time.time()
-    percentage = current * 100 / total
-    bar_length = 10
-    filled_length = int(bar_length * percentage // 100)
-    bar = '▪️' * filled_length + '▫️' * (bar_length - filled_length)
-
-    downloaded = human_readable_size(current)
-    total_size = human_readable_size(total)
-
-    if not hasattr(message, f"{type}_start"):
-        setattr(message, f"{type}_start", now)
-
-    elapsed_time = max(now - getattr(message, f"{type}_start", now), 0.1)
-    speed = current / elapsed_time
-    eta = (total - current) / speed if speed > 0 else 0
-
-    mins, secs = divmod(int(eta), 60)
-    eta_str = f"{mins}m, {secs}s"
-
-    display = (
-        f"**{'📥 Downloading...' if type == 'down' else '📤 Uploading...'}**\n\n"
-        f"**[{bar}]**\n"
-        f"Progress: `{percentage:.2f}%`\n"
-        f"Size: `{downloaded} of {total_size}`\n"
-        f"Speed: `{human_readable_size(speed)}/s`\n"
-        f"ETA: `{eta_str}`"
-    )
-
     with open(f'{message.id}{type}status.txt', "w") as fileup:
-        fileup.write(display)
-
-#-------------------------x---------------------x-------------
-
-START_TXT = (
-    "<b>👋 𝖧𝗂 {}, 𝖨 𝖺𝗆 𝖲𝖺𝗏𝖾 𝖱𝖾𝗌𝗍𝗋𝗂𝖼𝗍𝖾𝖽 𝖢𝗈𝗇𝗍𝖾𝗇𝗍 𝖡𝗈𝗍 🤖</b>\n\n"
-    "<blockquote>𝖨 𝖼𝖺𝗇 𝗁𝖾𝗅𝗉 𝗒𝗈𝗎 𝗋𝖾𝗍𝗋𝗂𝖾𝗏𝖾 𝖺𝗇𝖽 𝖿𝗈𝗋𝗐𝖺𝗋𝖽 𝗋𝖾𝗌𝗍𝗋𝗂𝖼𝗍𝖾𝖽 𝖼𝗈𝗇𝗍𝖾𝗇𝗍 𝖿𝗋𝗈𝗆 𝖳𝖾𝗅𝖾𝗀𝗋𝖺𝗆 𝗉𝗈𝗌𝗍𝗌.</blockquote>"
-)
+        fileup.write(f"{current * 100 / total:.1f}%")
 
 
-def get_start_buttons():
-    return InlineKeyboardMarkup([
-        [
-            InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾', url='https://t.me/UnknownBotz'),
-            InlineKeyboardButton('𝖲𝗎𝗉𝗉𝗈𝗋𝗍', url='https://t.me/UnknownBotzChat')
-        ],
-        [
-            InlineKeyboardButton('𝖧𝖾𝗅𝗉', callback_data='help_callback'),
-            InlineKeyboardButton('𝖣𝖾𝗏𝖾𝗅𝗈𝗉𝖾𝗋', url='tg://openmessage?user_id=6165669080')
-        ]
-    ])
-
-
-@Client.on_message(filters.command(["start"]) & filters.private)
+# start command
+@Client.on_message(filters.command(["start"]))
 async def send_start(client: Client, message: Message):
-    if IS_FSUB:
-        if not await get_fsub(client, message):
-            return
-
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id, message.from_user.first_name)
-
+    buttons = [[
+        InlineKeyboardButton("❣️ Developer", url = "https://t.me/UpperAssam")
+    ],[
+        InlineKeyboardButton('🔍 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ', url='https://t.me/UnknownBotzChat'),
+        InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url='https://t.me/UnknownBotz')
+    ]]
+    reply_markup = InlineKeyboardMarkup(buttons)
     await client.send_message(
-        chat_id=message.chat.id,
-        text=START_TXT.format(message.from_user.mention),
-        reply_markup=get_start_buttons(),
+        chat_id=message.chat.id, 
+        text=f"<b>👋 Hi {message.from_user.mention}, I am Save Restricted Content Bot, I can send you restricted content by its post link.\n\nFor downloading restricted content /login first.\n\nKnow how to use bot by - /help</b>", 
+        reply_markup=reply_markup, 
         reply_to_message_id=message.id
     )
+    return
 
 
-@Client.on_callback_query()
-async def callback_query_handler(client: Client, callback_query: CallbackQuery):
-    if callback_query.data == 'help_callback':
-        await callback_query.answer()
-        help_buttons = InlineKeyboardMarkup([
-            [
-                InlineKeyboardButton("𝖡𝖺𝖼𝗄", callback_data="back_callback"),
-                InlineKeyboardButton("𝖢𝗅𝗈𝗌𝖾", callback_data="close_callback")
-            ]
-        ])
-        await callback_query.edit_message_text(
-            text=HELP_TXT,
-            reply_markup=help_buttons
-        )
+# help command
+@Client.on_message(filters.command(["help"]))
+async def send_help(client: Client, message: Message):
+    await client.send_message(
+        chat_id=message.chat.id, 
+        text=f"{HELP_TXT}"
+    )
 
-    elif callback_query.data == 'back_callback':
-        await callback_query.answer()
-        await callback_query.edit_message_text(
-            text=START_TXT.format(callback_query.from_user.mention),
-            reply_markup=get_start_buttons()
-        )
-
-    elif callback_query.data == 'close_callback':
-        await callback_query.answer()
-        await callback_query.message.delete()
-
-
+# cancel command
 @Client.on_message(filters.command(["cancel"]))
 async def send_cancel(client: Client, message: Message):
     batch_temp.IS_BATCH[message.from_user.id] = True
-    await client.send_message(chat_id=message.chat.id, text="𝖡𝖺𝗍𝖼𝗁 𝖢𝖺𝗇𝖼𝖾𝗅𝗅𝖾𝖽.‼️")
-
+    await client.send_message(
+        chat_id=message.chat.id, 
+        text="**Batch Successfully Cancelled.**"
+    )
 
 @Client.on_message(filters.text & filters.private)
 async def save(client: Client, message: Message):
@@ -386,30 +318,4 @@ def get_message_type(msg: pyrogram.types.messages_and_media.message.Message):
         pass
 
 
-    buttons = []
-    if msg.reply_markup and msg.reply_markup.inline_keyboard:
-        for row in msg.reply_markup.inline_keyboard:
-            for button in row:
-                if button.url:
-                    buttons.append([InlineKeyboardButton(button.text, url=button.url)])
-
-    try:
-        send_func = getattr(client, f"send_{msg_type}", None)   # 👉 Properly indented
-        if send_func:
-            try:
-                await send_func(
-                    DB_CHANNEL,
-                    file,
-                    caption=caption_db,
-                    parse_mode=enums.ParseMode.MARKDOWN,
-                    reply_markup=InlineKeyboardMarkup(buttons) if buttons else None
-                )
-            except Exception as db_err:
-                print(f"Error sending to DB_CHANNEL: {db_err}")
-
-        await smsg.delete()
-
-    except Exception as e:
-        if ERROR_MESSAGE:
-            await client.send_message(chat, f"❌ Error: {e}", reply_to_message_id=message.id)
-        await smsg.delete()
+        
