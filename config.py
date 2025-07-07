@@ -5,7 +5,7 @@ IS_FSUB = bool(os.environ.get("FSUB", True)) # Set "True" For Enable Force Subsc
 AUTH_CHANNELS = list(map(int, os.environ.get("AUTH_CHANNEL", "-1002008497819 -1002108042638").split()))
 
 # Bot token @Botfather
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "7699848766:AAGHoAYw7uAd01N-1beOeaZdPgJ51K1anIE")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "8105389323:AAECrsGsZDIFY9fu0GWFZYNnvzdE1fBvJFU")
 
 # Your API ID from my.telegram.org
 API_ID = int(os.environ.get("API_ID", "20715688"))
