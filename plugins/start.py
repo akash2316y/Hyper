@@ -1,10 +1,20 @@
-from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-from config import IS_FSUB
-from pyrogram.types import CallbackQuery
-from .fsub import get_fsub
+import os
+import asyncio
+from pyrogram import Client, filters, enums
+from pyrogram.errors import (
+    FloodWait,
+    UserIsBlocked,
+    InputUserDeactivated,
+    UserAlreadyParticipant,
+    InviteHashExpired,
+    UsernameNotOccupied
+)
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from config import API_ID, API_HASH, ERROR_MESSAGE, IS_FSUB
 from database.database import db
 from plugins.strings import HELP_TXT
+from plugins.fsub import get_fsub
+
 
 class batch_temp(object):
     IS_BATCH = {}
