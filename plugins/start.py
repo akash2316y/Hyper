@@ -7,7 +7,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from config import API_ID, API_HASH, ERROR_MESSAGE
 from database.database import db
 from plugins.strings import HELP_TXT
-from config import IS_FSUB
+from config import IS_FSUB, DB_CHANNEL
 from plugins.fsub import get_fsub
 
 
