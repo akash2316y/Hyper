@@ -4,7 +4,7 @@ from config import IS_FSUB
 from pyrogram.types import CallbackQuery
 from .fsub import get_fsub
 from database.database import db
-from .strings import HELP_TXT
+from plugins.strings import HELP_TXT
 
 class batch_temp(object):
     IS_BATCH = {}
