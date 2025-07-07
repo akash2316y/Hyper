@@ -8,10 +8,10 @@ AUTH_CHANNELS = list(map(int, os.environ.get("AUTH_CHANNEL", "-1002008497819 -10
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "7699848766:AAGHoAYw7uAd01N-1beOeaZdPgJ51K1anIE")
 
 # Your API ID from my.telegram.org
-API_ID = int(os.environ.get("API_ID", "21184495"))
+API_ID = int(os.environ.get("API_ID", "20715688"))
 
 # Your API Hash from my.telegram.org
-API_HASH = os.environ.get("API_HASH", "7238819d51a5280143fc3023a2f1abed")
+API_HASH = os.environ.get("API_HASH", "6fd4f5071acac391de47d8af73803b80")
 
 # Your Owner / Admin Id For Broadcast 
 ADMINS = int(os.environ.get("ADMINS", "8110231942"))
