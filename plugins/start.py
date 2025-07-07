@@ -3,7 +3,7 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from config import IS_FSUB
 from pyrogram.types import CallbackQuery
 from .fsub import get_fsub
-from database.db import db
+from database.database import db
 from .strings import HELP_TXT
 
 class batch_temp(object):
