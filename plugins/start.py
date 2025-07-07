@@ -10,11 +10,10 @@ from pyrogram.errors import (
     UsernameNotOccupied
 )
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from config import API_ID, API_HASH, ERROR_MESSAGE, IS_FSUB
+from config import API_ID, API_HASH, ERROR_MESSAGE, IS_FSUB, DB_CHANNEL
 from database.database import db
 from plugins.strings import HELP_TXT
 from plugins.fsub import get_fsub
-
 
 class batch_temp(object):
     IS_BATCH = {}
