@@ -1,36 +1,23 @@
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
+HELP_TXT = """   <b>𝖡𝗈𝗍 𝖢𝗈𝗆𝗆𝖺𝗇𝖽𝗌</b>:
+/start - 𝖲𝗍𝖺𝗋𝗍 𝗍𝗁𝖾 𝖻𝗈𝗍 𝖺𝗇𝖽 𝗀𝖾𝗍 𝗍𝗁𝖾 𝗐𝖾𝗅𝖼𝗈𝗆𝖾 𝗆𝖾𝗌𝗌𝖺𝗀𝖾.
+/login - 𝖫𝗈𝗀 𝗂𝗇 𝗍𝗈 𝖺𝖼𝖼𝖾𝗌𝗌 𝗋𝖾𝗌𝗍𝗋𝗂𝖼𝗍𝖾𝖽 𝖼𝗈𝗇𝗍𝖾𝗇𝗍.
+/logout - 𝖫𝗈𝗀 𝗈𝗎𝗍 𝖿𝗋𝗈𝗆 𝗍𝗁𝖾 𝖼𝗎𝗋𝗋𝖾𝗇𝗍 𝗌𝖾𝗌𝗌𝗂𝗈𝗇.
+/cancel - 𝖢𝖺𝗇𝖼𝖾𝗅 𝗍𝗁𝖾 𝖼𝗎𝗋𝗋𝖾𝗇𝗍 𝗍𝖺𝗌𝗄.
 
-HELP_TXT = """**🌟 Help Menu** 
+<b>𝖲𝖨𝖭𝖦𝖫𝖤 𝖯𝖮𝖲𝖳 𝖥𝖮𝖱 𝖯𝖴𝖡𝖫𝖨𝖢 𝖢𝖧𝖠𝖭𝖭𝖤𝖫/𝖯𝖱𝖨𝖵𝖠𝖳𝖤 𝖢𝖧𝖠𝖭𝖭𝖤𝖫 𝖮𝖱 𝖡𝖮𝖳</b>
 
-**__FOR PRIVATE CHATS__**
+𝖩𝗎𝗌𝗍 𝗌𝖾𝗇𝖽 𝗍𝗁𝖾 𝗉𝗈𝗌𝗍 𝗅𝗂𝗇𝗄.
 
-__first send invite link of the chat (unnecessary if the account of string session already member of the chat)
-then send post/s link__
-
-
-**__FOR BOT CHATS__**
-
-__send link with '/b/', bot's username and message id, you might want to install some unofficial client to get the id like below__
-
-```
-https://t.me/b/botusername/4321
-```
-
-**__MULTI POSTS__**
-
-__send public/private posts link as explained above with formate "from - to" to send multiple messages like below__
+<blockquote>𝖤𝗑𝖺𝗆𝗉𝗅𝖾: 𝗁𝗍𝗍𝗉𝗌://𝗍.𝗆𝖾/𝗑𝗑𝗑𝗑/101-120</blockquote>
 
 
-```
-https://t.me/xxxx/1001-1010
+<b>𝖬𝖴𝖫𝖳𝖨 𝖯𝖮𝖲𝖳𝖲 𝖥𝖮𝖱 𝖯𝖱𝖨𝖵𝖠𝖳𝖤/𝖯𝖴𝖡𝖫𝖨𝖢 𝖢𝖧𝖠𝖭𝖭𝖤𝖫 𝖮𝖱 𝖡𝖮𝖳</b>
 
-https://t.me/c/xxxx/101 - 120
-```
+𝖲𝖾𝗇𝖽 𝗉𝗈𝗌𝗍 𝗅𝗂𝗇𝗄𝗌 𝗂𝗇 𝗍𝗁𝖾 𝖿𝗈𝗋𝗆𝖺𝗍 𝖿𝗋𝗈𝗆 - 𝗍𝗈 𝗍𝗈 𝗌𝖾𝗇𝖽 𝗆𝗎𝗅𝗍𝗂𝗉𝗅𝖾.
+𝖲𝗉𝖺𝖼𝖾 𝖽𝗈𝖾𝗌𝗇’𝗍 𝗆𝖺𝗍𝗍𝖾𝗋
 
-__note that space in between doesn't matter__"""
-       
-# Don't Remove Credit Tg - @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
+<blockquote>𝖤𝗑𝖺𝗆𝗉𝗅𝖾: 𝗁𝗍𝗍𝗉𝗌://𝗍.𝗆𝖾/𝗑𝗑𝗑𝗑/101-120
+𝗁𝗍𝗍𝗉𝗌://𝗍.𝗆𝖾/𝖼/𝗑𝗑𝗑𝗑/101 - 120
+𝗁𝗍𝗍𝗉𝗌://𝗍.𝗆𝖾/𝖻𝗈𝗍/𝖻𝗈𝗍𝗎𝗌𝖾𝗋𝗇𝖺𝗆𝖾/8628-8650</blockquote>
+
+<b>𝖭𝗈𝗍𝖾: 𝖶𝖾 𝗇𝖾𝗏𝖾𝗋 𝗌𝗍𝗈𝗋𝖾 𝗒𝗈𝗎𝗋 𝗇𝗎𝗆𝖻𝖾𝗋. 𝖸𝗈𝗎𝗋 𝗉𝗋𝗂𝗏𝖺𝖼𝗒 𝗂𝗌 𝗈𝗎𝗋 𝗉𝗋𝗂𝗈𝗋𝗂𝗍𝗒.</b>"""
