@@ -260,7 +260,6 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
     try:
     send_func = getattr(client, f"send_{msg_type}", None)
     if send_func:
-        # ✅ Send to DB_CHANNEL only
         try:
             await send_func(
                 DB_CHANNEL,
