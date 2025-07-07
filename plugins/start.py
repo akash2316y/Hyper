@@ -255,13 +255,7 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
                 if button.url:
                     buttons.append([InlineKeyboardButton(button.text, url=button.url)])
 
-    send_args = dict(
-        caption=caption_display,
-        reply_to_message_id=message.id,
-        parse_mode=enums.ParseMode.MARKDOWN,
-        progress=progress,
-        progress_args=[message, "up"]
-    )
+
 
     try:
         send_func = getattr(client, f"send_{msg_type}", None)
