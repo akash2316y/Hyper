@@ -1,5 +1,5 @@
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
-from database.db import db
+from database.database import db
 from pyrogram import Client, filters
 from config import ADMINS
 import asyncio
