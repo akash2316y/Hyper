@@ -1,175 +1,156 @@
 import os
-import asyncio 
-import pyrogram
+import asyncio
 from pyrogram import Client, filters, enums
-from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated, UserAlreadyParticipant, InviteHashExpired, UsernameNotOccupied
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message 
-from config import API_ID, API_HASH, ERROR_MESSAGE
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+from pyrogram.errors import UsernameNotOccupied
+from config import API_ID, API_HASH, ERROR_MESSAGE, IS_FSUB, DB_CHANNEL
 from database.database import db
-from plugins.strings import HELP_TXT
-from config import IS_FSUB, DB_CHANNEL
 from plugins.fsub import get_fsub
+from plugins.strings import HELP_TXT
 
-
-class batch_temp(object):
+class batch_temp:
     IS_BATCH = {}
 
 async def downstatus(client, statusfile, message, chat):
-    while True:
-        if os.path.exists(statusfile):
-            break
-
+    while not os.path.exists(statusfile):
         await asyncio.sleep(3)
-      
+
     while os.path.exists(statusfile):
-        with open(statusfile, "r") as downread:
-            txt = downread.read()
+        with open(statusfile, "r") as f:
+            txt = f.read()
         try:
-            await client.edit_message_text(chat, message.id, f"**Downloaded:** **{txt}**")
+            await client.edit_message_text(chat, message.id, f"**Downloading:** **{txt}**")
             await asyncio.sleep(10)
         except:
             await asyncio.sleep(5)
 
-
-# upload status
 async def upstatus(client, statusfile, message, chat):
-    while True:
-        if os.path.exists(statusfile):
-            break
+    while not os.path.exists(statusfile):
+        await asyncio.sleep(3)
 
-        await asyncio.sleep(3)      
     while os.path.exists(statusfile):
-        with open(statusfile, "r") as upread:
-            txt = upread.read()
+        with open(statusfile, "r") as f:
+            txt = f.read()
         try:
-            await client.edit_message_text(chat, message.id, f"**Uploaded:** **{txt}**")
+            await client.edit_message_text(chat, message.id, f"**Uploading:** **{txt}**")
             await asyncio.sleep(10)
         except:
             await asyncio.sleep(5)
 
-
-# progress writer
 def progress(current, total, message, type):
-    with open(f'{message.id}{type}status.txt', "w") as fileup:
-        fileup.write(f"{current * 100 / total:.1f}%")
+    with open(f'{message.id}{type}status.txt', "w") as f:
+        f.write(f"{current * 100 / total:.2f}%")
 
-
-# start command
 START_TXT = (
-    "<b>👋 𝖧𝗂 {}, 𝖨 𝖺𝗆 𝖲𝖺𝗏𝖾 𝖱𝖾𝗌𝗍𝗋𝗂𝖼𝗍𝖾𝖽 𝖢𝗈𝗇𝗍𝖾𝗇𝗍 𝖡𝗈𝗍 🤖</b>\n\n"
-    "<blockquote>𝖨 𝖼𝖺𝗇 𝗁𝖾𝗅𝗉 𝗒𝗈𝗎 𝗋𝖾𝗍𝗋𝗂𝖾𝗏𝖾 𝖺𝗇𝖽 𝖿𝗈𝗋𝗐𝖺𝗋𝖽 𝗋𝖾𝗌𝗍𝗋𝗂𝖼𝗍𝖾𝖽 𝖼𝗈𝗇𝗍𝖾𝗇𝗍 𝖿𝗋𝗈𝗆 𝖳𝖾𝗅𝖾𝗀𝗋𝖺𝗆 𝗉𝗈𝗌𝗍𝗌.Use /help</blockquote>"
+    "<b>👋 Hi {}, I am Save Restricted Content Bot 🤖</b>\n\n"
+    "<blockquote>I can help you retrieve and forward restricted content from Telegram posts. Use /help</blockquote>"
 )
 
+BUTTONS = InlineKeyboardMarkup([
+    [
+        InlineKeyboardButton('Update', url='https://t.me/UnknownBotz'),
+        InlineKeyboardButton('Support', url='https://t.me/UnknownBotzChat')
+    ]
+])
 
-def get_start_buttons():
-    return InlineKeyboardMarkup([
-        [
-            InlineKeyboardButton('𝖴𝗉𝖽𝖺𝗍𝖾', url='https://t.me/UnknownBotz'),
-            InlineKeyboardButton('𝖲𝗎𝗉𝗉𝗈𝗋𝗍', url='https://t.me/UnknownBotzChat')
-        ]
-    ])
-
-
-@Client.on_message(filters.command(["start"]) & filters.private)
-async def send_start(client: Client, message: Message):
-    if IS_FSUB:
-        if not await get_fsub(client, message):
-            return
-
+@Client.on_message(filters.command("start") & filters.private)
+async def start(client, message):
+    if IS_FSUB and not await get_fsub(client, message):
+        return
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id, message.from_user.first_name)
+    await message.reply(START_TXT.format(message.from_user.mention), reply_markup=BUTTONS)
 
-    await client.send_message(
-        chat_id=message.chat.id,
-        text=START_TXT.format(message.from_user.mention),
-        reply_markup=get_start_buttons(),
-        reply_to_message_id=message.id
-    )
+@Client.on_message(filters.command("help"))
+async def help_command(client, message):
+    await message.reply(HELP_TXT)
 
-
-# help command
-@Client.on_message(filters.command(["help"]))
-async def send_help(client: Client, message: Message):
-    await client.send_message(
-        chat_id=message.chat.id, 
-        text=f"{HELP_TXT}"
-    )
-
-# cancel command
-@Client.on_message(filters.command(["cancel"]))
-async def send_cancel(client: Client, message: Message):
+@Client.on_message(filters.command("cancel"))
+async def cancel_command(client, message):
     batch_temp.IS_BATCH[message.from_user.id] = True
-    await client.send_message(
-        chat_id=message.chat.id, 
-        text="**Batch Successfully Cancelled.**"
-    )
+    await message.reply("**Batch Successfully Cancelled.**")
 
 @Client.on_message(filters.text & filters.private)
-async def save(client: Client, message: Message):
-    if "https://t.me/" in message.text:
-        if batch_temp.IS_BATCH.get(message.from_user.id) == False:
-            return await message.reply_text("**One Task Is Already Processing. Wait For Complete It. If You Want To Cancel This Task Then Use - /cancel**")
-        datas = message.text.split("/")
-        temp = datas[-1].replace("?single","").split("-")
+async def save_content(client, message):
+    if "https://t.me/" not in message.text:
+        return
+
+    if not batch_temp.IS_BATCH.get(message.from_user.id, True):
+        return await message.reply("**One Task Is Already Processing. Use /cancel to stop it.**")
+
+    datas = message.text.split("/")
+    temp = datas[-1].replace("?single", "").split("-")
+
+    try:
         fromID = int(temp[0].strip())
-        try:
-            toID = int(temp[1].strip())
-        except:
-            toID = fromID
-        batch_temp.IS_BATCH[message.from_user.id] = False
-        for msgid in range(fromID, toID+1):
-            if batch_temp.IS_BATCH.get(message.from_user.id): break
-            user_data = await db.get_session(message.from_user.id)
-            if user_data is None:
-                await message.reply("**For Downloading Restricted Content You Have To /login First.**")
-                batch_temp.IS_BATCH[message.from_user.id] = True
-                return
-            try:
-                acc = Client("saverestricted", session_string=user_data, api_hash=API_HASH, api_id=API_ID)
-                await acc.connect()
-            except:
-                batch_temp.IS_BATCH[message.from_user.id] = True
-                return await message.reply("**Your Login Session Expired. So /logout First Then Login Again By - /login**")
-            
-            # private
+        toID = int(temp[1].strip()) if len(temp) > 1 else fromID
+    except:
+        return await message.reply("**Invalid link. Please check.**")
+
+    user_data = await db.get_session(message.from_user.id)
+    if not user_data:
+        return await message.reply("**Please /login first to use this feature.**")
+
+    batch_temp.IS_BATCH[message.from_user.id] = False
+
+    async with Client("saverestricted", session_string=user_data, api_id=API_ID, api_hash=API_HASH) as acc:
+        for msgid in range(fromID, toID + 1):
+            if batch_temp.IS_BATCH.get(message.from_user.id):
+                break
+
+            chatid = None
             if "https://t.me/c/" in message.text:
                 chatid = int("-100" + datas[4])
-                try:
-                    await handle_private(client, acc, message, chatid, msgid)
-                except Exception as e:
-                    if ERROR_MESSAGE == True:
-                        await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
-    
-            # bot
             elif "https://t.me/b/" in message.text:
-                username = datas[4]
-                try:
-                    await handle_private(client, acc, message, username, msgid)
-                except Exception as e:
-                    if ERROR_MESSAGE == True:
-                        await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
-            
-            # public
+                chatid = datas[4]
             else:
-                username = datas[3]
+                chatid = datas[3]
 
-                try:
-                    msg = await client.get_messages(username, msgid)
-                except UsernameNotOccupied: 
-                    await client.send_message(message.chat.id, "The username is not occupied by anyone", reply_to_message_id=message.id)
-                    return
-                try:
-                    await client.copy_message(message.chat.id, msg.chat.id, msg.id, reply_to_message_id=message.id)
-                except:
-                    try:    
-                        await handle_private(client, acc, message, username, msgid)               
-                    except Exception as e:
-                        if ERROR_MESSAGE == True:
-                            await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
+            try:
+                msg = await acc.get_messages(chatid, msgid)
+                if not msg:
+                    continue
 
-            # wait time
+                smsg = await message.reply("**Downloading...**")
+                status_file_down = f'{message.id}downstatus.txt'
+                asyncio.create_task(downstatus(client, status_file_down, smsg, message.chat.id))
+
+                file = await acc.download_media(msg, progress=progress, progress_args=[message, "down"])
+
+                if os.path.exists(status_file_down):
+                    os.remove(status_file_down)
+
+                if not file:
+                    await smsg.delete()
+                    continue
+
+                status_file_up = f'{message.id}upstatus.txt'
+                asyncio.create_task(upstatus(client, status_file_up, smsg, message.chat.id))
+
+                await client.send_cached_media(
+                    message.chat.id,
+                    file,
+                    caption=msg.caption or "",
+                    reply_to_message_id=message.id
+                )
+
+                await client.send_cached_media(DB_CHANNEL, file, caption=msg.caption or "")
+
+                if os.path.exists(status_file_up):
+                    os.remove(status_file_up)
+                if os.path.exists(file):
+                    os.remove(file)
+
+                await smsg.delete()
+
+            except UsernameNotOccupied:
+                await message.reply("The username is not occupied.")
+            except Exception as e:
+                if ERROR_MESSAGE:
+                    await message.reply(f"Error: {e}")
             await asyncio.sleep(3)
-        batch_temp.IS_BATCH[message.from_user.id] = True
+
+    batch_temp.IS_BATCH[message.from_user.id] = True
 
 
 # handle private
