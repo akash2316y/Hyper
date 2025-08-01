@@ -4,7 +4,7 @@ import re
 from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from config import API_ID, API_HASH, ERROR_MESSAGE, DB_CHANNEL
-from database.db import db
+from database.database import db
 from TechVJ.strings import HELP_TXT
 
 class batch_temp:
