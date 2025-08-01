@@ -16,7 +16,7 @@ from pyrogram.errors import (
     PasswordHashInvalid
 )
 from config import API_ID, API_HASH
-from database.db import db
+from database.database import database 
 
 SESSION_STRING_SIZE = 351
 
